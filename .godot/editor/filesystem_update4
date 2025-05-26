@@ -24,6 +24,6 @@ res://Map/Farm/farm.tscn
 res://Player/player.tscn
 res://Map/Town/town.tscn
 res://UI/game_start_menu.tscn
-res://Bag/projectiles/烈焰激光.gd
+res://Global/scene_manager.gd
 res://Bag/scene/ui_manager.gd
-res://TimeSystem/time_color.gd
+res://Bag/scene/box_ui.gd

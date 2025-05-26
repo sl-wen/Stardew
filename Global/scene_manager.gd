@@ -29,6 +29,7 @@ func load_main_scene() -> void:
 	var main_scene :Node2D= load(main_scene_path).instantiate()
 	if main_scene != null:
 		get_tree().root.add_child(main_scene)
+		level_changed.emit()
 
 func change_level(target_level:String,spawn_pos_name:String) -> void:
 	## {Farm,MyHouse}

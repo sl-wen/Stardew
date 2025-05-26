@@ -18,6 +18,9 @@ var store_show:bool = false:
 func _ready() -> void:
 	initial()
 	SceneManager.level_changed.connect(initial)
+	for box in boxes:#每个箱子都要连接信号
+		box.box_opened.connect(on_box_opened)
+		box.box_closed.connect(on_box_closed)
 	
 func initial() -> void:
 	boxes = get_tree().get_nodes_in_group("Boxes")
@@ -25,9 +28,7 @@ func initial() -> void:
 	store_panel.visible = false
 	bag_ui.visible = false
 	box_ui.visible = false #赋值初始状态
-	for box in boxes:#每个箱子都要连接信号
-		box.box_opened.connect(on_box_opened)
-		box.box_closed.connect(on_box_closed)
+
 		
 
 func _process(_delta: float) -> void:

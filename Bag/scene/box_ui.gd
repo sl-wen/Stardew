@@ -24,13 +24,13 @@ func _ready() -> void:
 		slots[slot_index].shift_slot_click.connect(on_shift_slot_click.bind(slot_index))
 		slots[slot_index].slot_click_right.connect(on_slot_click_right.bind(slot_index))
 		slots[slot_index].ctrl_slot_click.connect(on_ctrl_slot_click.bind(slot_index))
-		
+	for box in boxes:
+		box.box_opened.connect(on_box_opened)
+		box.box_closed.connect(on_box_closed)	
+	
 func initial() -> void:
 	player = get_tree().get_first_node_in_group("Player")
 	boxes = get_tree().get_nodes_in_group("Boxes") #有很多个箱子，箱子的数据都各自独立。
-	for box in boxes:
-		box.box_opened.connect(on_box_opened)
-		box.box_closed.connect(on_box_closed)
 	
 	
 func on_box_opened(name) -> void: #打开箱子触发的信号

@@ -19,12 +19,12 @@ config/icon="uid://dufnb3pv4jpna"
 [autoload]
 
 Global="*res://Global/global.gd"
+SceneManager="*res://Global/scene_manager.tscn"
+AudioManager="*res://Global/audio_manager.gd"
 MouseCursor="*res://Global/mouse_cursor.tscn"
 MouseItem="*res://Global/mouse_item.gd"
 TimeSystem="*res://TimeSystem/time_system.gd"
-SceneManager="*res://Global/scene_manager.tscn"
 SaveManager="*res://Global/save_manager.gd"
-AudioManager="*res://Global/audio_manager.gd"
 
 [display]
 
