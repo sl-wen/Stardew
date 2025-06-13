@@ -55,6 +55,7 @@ func _ready() -> void:
 	jian_qi.hide()
 	can_move = true
 	effects.hide()
+	player_direction=Vector2.DOWN
 	#只有部分代码需要在场景转换时重新赋值
 	initial()
 	SceneManager.level_changed.connect(initial)
