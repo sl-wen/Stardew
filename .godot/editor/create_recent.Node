@@ -1,10 +1,10 @@
+CanvasModulate
 Button
 PointLight2D
 WorldEnvironment
 CollisionShape2D
 Sprite2D
 CharacterBody2D
-CanvasModulate
 Node2D
 VisibleOnScreenNotifier2D
 GPUParticles2D
@@ -12,4 +12,3 @@ Line2D
 AnimationPlayer
 Label
 TextureRect
-RichTextLabel

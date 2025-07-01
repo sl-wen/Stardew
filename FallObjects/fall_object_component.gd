@@ -26,7 +26,7 @@ func _ready() -> void:
 	collision_shape_2d.disabled = true
 	if is_bezier:
 		set_destination()
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(.5).timeout
 	collision_shape_2d.set_deferred("disabled",false)
 
 
