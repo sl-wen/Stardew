@@ -1,0 +1,47 @@
+# Godot 4+ specific ignores
+.godot/
+*.import
+
+# Export presets and export files
+export_presets.cfg
+*.x86_64
+*.exe
+*.app
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Save files (uncomment if you don't want to track game saves)
+# SaveSystem/saves/
+
+# Audio system temporary files (if any)
+# AudioSystem/cache/
+
+# Build artifacts
+build/
+dist/
+*.deb
+*.rpm
+
+# Godot's binary export template cache
+.godot/export_templates/
