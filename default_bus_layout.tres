@@ -1,15 +1,26 @@
+# 默认音频总线布局资源文件
+# 配置游戏的音频系统总线结构，包括主总线、音乐总线和音效总线
+# 这个布局定义了音频信号的路由和处理流程
 [gd_resource type="AudioBusLayout" format=3 uid="uid://6eak6yeohwmc"]
 
 [resource]
-bus/1/name = &"Music"
-bus/1/solo = false
-bus/1/mute = false
-bus/1/bypass_fx = false
-bus/1/volume_db = 0.0
-bus/1/send = &"Master"
-bus/2/name = &"SFX"
-bus/2/solo = false
-bus/2/mute = false
-bus/2/bypass_fx = false
-bus/2/volume_db = 0.0
-bus/2/send = &"Master"
+# 总线配置说明：
+# 游戏音频系统包含3个总线：Master（主总线）、Music（音乐总线）、SFX（音效总线）
+
+# 音乐总线配置
+# 用于播放背景音乐和环境音乐
+bus/1/name = &"Music"         # 总线名称：音乐总线
+bus/1/solo = false           # 独奏模式：关闭（不影响其他总线）
+bus/1/mute = false           # 静音：关闭（正常播放）
+bus/1/bypass_fx = false      # 跳过效果：关闭（正常处理效果）
+bus/1/volume_db = 0.0        # 音量：0dB（正常音量）
+bus/1/send = &"Master"       # 发送到：主总线（最终输出到主总线）
+
+# 音效总线配置
+# 用于播放游戏音效，如脚步声、工具使用声、UI音效等
+bus/2/name = &"SFX"          # 总线名称：音效总线
+bus/2/solo = false           # 独奏模式：关闭
+bus/2/mute = false           # 静音：关闭
+bus/2/bypass_fx = false      # 跳过效果：关闭
+bus/2/volume_db = 0.0        # 音量：0dB（正常音量）
+bus/2/send = &"Master"       # 发送到：主总线
