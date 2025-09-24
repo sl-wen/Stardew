@@ -240,8 +240,44 @@ SceneManager="*res://Global/scene_manager.gd"
 ### 代码规范
 - 使用GDScript 2.0语法
 - 遵循Godot最佳实践
-- 添加详细的中文注释
+- **添加详细的中文注释**：所有代码文件都有行级别的详细中文注释
 - 使用有意义的变量和函数名
+- 统一的命名规范和代码风格
+
+### 注释规范
+本项目采用严格的中文注释标准，确保代码的可读性和可维护性：
+
+```gdscript
+# 文件级注释：每个文件开头的功能说明
+# 简要描述文件的主要功能和作用
+
+## 导出属性注释
+# 使用##开头标注导出的属性，可以在Godot编辑器中看到
+@export var player_speed: int = 100  # 玩家移动速度，像素/秒
+
+## 函数注释
+# 函数说明：详细描述函数的功能、参数和返回值
+# @param param_name: 参数说明
+# @return: 返回值说明
+func update_player_position(delta: float) -> void:
+    # 行级别注释：解释具体的代码逻辑
+    # 每个重要变量、条件判断、循环都有相应的注释
+    var new_position = current_position + velocity * delta
+
+    # 检查边界条件
+    if new_position.x < min_bounds:
+        new_position.x = min_bounds  # 防止超出左边界
+
+    # 更新位置
+    current_position = new_position
+```
+
+注释要求：
+1. **文件头部**：每个代码文件都有详细的文件功能说明
+2. **导出属性**：所有@export属性都有中文注释说明
+3. **函数说明**：每个函数都有功能描述、参数说明和返回值说明
+4. **行级别**：重要代码行都有相应的解释注释
+5. **代码块**：复杂逻辑块有整体说明
 
 ### 提交规范
 ```
