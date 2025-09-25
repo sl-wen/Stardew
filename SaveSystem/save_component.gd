@@ -8,19 +8,27 @@ func _ready() -> void:
 	
 
 func get_save_data() -> Array[PackedScene]:
-	var save_data = SaveData.new()
+	var nodes_to_save: Array[PackedScene] = []
 	var parent = get_parent()
 	for child in parent.get_children():
 		var pack_scene = PackedScene.new()
 		pack_scene.pack(child)
 		if child.name != "SaveComponent":
-			save_data.nodes.append(pack_scene)
-	return save_data.nodes
+			nodes_to_save.append(pack_scene)
+	return nodes_to_save
 	
 func set_save_data(nodes:Array[PackedScene]) -> void:
 	var parent = get_parent()
-	#for child in parent.get_children():
-		#child.queue_free()
-	for child in nodes:
-		var pack_node = child.instantiate()
-		parent.add_child(pack_node)
+
+	# 先清理现有的子节点（除了SaveComponent本身）
+	for child in parent.get_children():
+		if child.name != "SaveComponent":
+			child.queue_free()
+
+	# 等待一帧确保节点被完全清理
+	await get_tree().process_frame
+
+	# 恢复保存的节点
+	for node_scene in nodes:
+		var node_instance = node_scene.instantiate()
+		parent.add_child(node_instance)

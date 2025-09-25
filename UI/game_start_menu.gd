@@ -21,15 +21,38 @@ func _ready() -> void:
 	AudioManager.play_music(bg_music1)
 
 func _on_create_pressed() -> void:
-	pass # Replace with function body.
+	print("开始新建游戏...")
+
+	# 加载主场景
+	SceneManager.load_main_scene()
+
+	# 初始化新游戏状态
+	SaveManager.new_game()
+
+	# 移除开始菜单
+	queue_free()
+
+	print("新游戏创建完成")
 
 
 func _on_load_pressed() -> void:
+	print("开始加载游戏...")
+
+	# 加载主场景
 	SceneManager.load_main_scene()
+
+	# 尝试加载存档数据
+	SaveManager._load()
+
+	# 移除开始菜单
 	queue_free()
 
+	print("游戏加载完成")
+
 func _on_coop_pressed() -> void:
-	pass # Replace with function body.
+	print("多人游戏功能暂未实现")
+	# TODO: 实现多人游戏功能
+	# 可以在这里添加多人游戏的初始化逻辑
 
 
 func _on_exit_pressed() -> void:
