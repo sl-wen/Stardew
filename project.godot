@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Stardew"
 run/main_scene="uid://3xejacmgjon6"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.5", "GL Compatibility")
 boot_splash/image="uid://d5pvy0mjih63"
 config/icon="uid://dufnb3pv4jpna"
 
