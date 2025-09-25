@@ -16,11 +16,13 @@ func _save() -> void:
 	for save_component in save_components:
 		# 从每个组件获取保存数据
 		# 注意：到myhouse场景时save_component可能会被释放
-		save_data.nodes = save_component.get_save_data()
+		var component_data = save_component.get_save_data()
+		save_data.nodes.append_array(component_data)
 
 	# 获取玩家节点并保存物品栏数据
 	var player = get_tree().get_first_node_in_group("Player") as Player
-	save_data.player_inventory = player.bag_system
+	if player:
+		save_data.player_inventory = player.bag_system
 
 	# 保存数据到硬盘（user://是Godot的用户数据目录）
 	ResourceSaver.save(save_data,"user://abc.tres")
@@ -29,17 +31,26 @@ func _save() -> void:
 # 从user://abc.tres文件中加载SaveData资源
 # 将数据恢复到各个SaveComponent组件和玩家物品栏
 func _load() -> void:
+	# 检查存档文件是否存在
+	if not FileAccess.file_exists("user://abc.tres"):
+		print("存档文件不存在")
+		return
+
 	# 加载存档数据资源
 	var save_data = ResourceLoader.load("user://abc.tres") as SaveData
+	if not save_data:
+		print("加载存档数据失败")
+		return
 
 	# 获取所有需要恢复数据的组件节点
 	var save_components = get_tree().get_nodes_in_group("SaveComponents") as Array[SaveComponent]
 	for save_component in save_components:
 		# 打印调试信息
-		print(save_data.nodes)
+		print("正在恢复数据:", save_data.nodes.size(), "个节点")
 		# 将保存的数据恢复到组件中
 		save_component.set_save_data(save_data.nodes)
 
 	# 获取玩家节点并恢复物品栏数据
 	var player = get_tree().get_first_node_in_group("Player") as Player
-	player.bag_system = save_data.player_inventory
+	if player and save_data.player_inventory:
+		player.bag_system = save_data.player_inventory
