@@ -41,8 +41,8 @@ func _on_load_pressed() -> void:
 	# 加载主场景
 	SceneManager.load_main_scene()
 
-	# 尝试加载存档数据
-	SaveManager._load()
+	# 异步加载存档数据
+	await SaveManager._load()
 
 	# 移除开始菜单
 	queue_free()

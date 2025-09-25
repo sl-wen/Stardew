@@ -32,3 +32,5 @@ func set_save_data(nodes:Array[PackedScene]) -> void:
 	for node_scene in nodes:
 		var node_instance = node_scene.instantiate()
 		parent.add_child(node_instance)
+
+	print("组件数据恢复完成:", nodes.size(), "个节点")

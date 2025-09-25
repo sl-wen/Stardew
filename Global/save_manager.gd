@@ -60,18 +60,28 @@ func _load() -> void:
 		print("加载存档数据失败")
 		return
 
+	# 异步加载数据
+	_load_async(save_data)
+
+## 异步加载游戏数据
+# 异步版本的加载函数，用于处理SaveComponent的异步set_save_data
+func _load_async(save_data: SaveData) -> void:
 	# 获取所有需要恢复数据的组件节点
 	var save_components = get_tree().get_nodes_in_group("SaveComponents") as Array[SaveComponent]
+
+	# 异步恢复所有组件数据
 	for save_component in save_components:
 		# 打印调试信息
 		print("正在恢复数据:", save_data.nodes.size(), "个节点")
-		# 将保存的数据恢复到组件中
-		save_component.set_save_data(save_data.nodes)
+		# 异步恢复数据
+		await save_component.set_save_data(save_data.nodes)
 
 	# 获取玩家节点并恢复物品栏数据
 	var player = get_tree().get_first_node_in_group("Player") as Player
 	if player and save_data.player_inventory:
 		player.bag_system = save_data.player_inventory
+
+	print("游戏数据恢复完成")
 
 ## 新建游戏
 # 清除存档文件并初始化新游戏状态
