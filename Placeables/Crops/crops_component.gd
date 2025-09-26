@@ -128,17 +128,8 @@ func on_watering(local_cell_position) -> void:
 				break
 
 func get_current_season() -> Item.Season:
-	# 获取当前季节，基于月份计算
-	# 这里简化处理，实际应该从TimeSystem获取
-	var current_month = TimeSystem.current_day % 112  # 假设4季各28天
-	if current_month < 28:
-		return Item.Season.Spring
-	elif current_month < 56:
-		return Item.Season.Summer
-	elif current_month < 84:
-		return Item.Season.Autumn
-	else:
-		return Item.Season.Winter
+	# 获取当前季节，从TimeSystem获取正确计算
+	return TimeSystem.current_season
 
 func can_plant_in_current_season(seed_item: Item, current_season: Item.Season) -> bool:
 	if not seed_item or seed_item.seasons.size() == 0:

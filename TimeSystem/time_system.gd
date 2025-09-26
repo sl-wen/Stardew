@@ -63,7 +63,7 @@ var current_minute:int = -1
 var current_day:int = 0
 
 ## 当前季节
-# 基于天数计算季节（每28天一个季节）
+# 基于365天计算季节（春季91天，夏季91天，秋季91天，冬季92天）
 var current_season:int = 0  # 0=春, 1=夏, 2=秋, 3=冬
 
 ## 季节变化信号
@@ -140,9 +140,39 @@ func recalculate_time() -> void:
 		# 发出天数变化信号，主要用于作物生长等需要按天计算的功能
 		time_tick_day.emit(day)
 
-	# 检查季节变化（每28天一个季节）
-	var new_season = int(day / 28) % 4
+	# 检查季节变化（基于365天的季节分布）
+	var new_season = get_season_by_day(day)
 	if current_season != new_season:
 		current_season = new_season
 		# 发出季节变化信号
 		season_changed.emit(current_season, seasons[current_season])
+
+## 根据天数获取季节（基于365天的正确季节分布）
+# @param day: 当前天数（从1开始）
+# @return: 季节索引（0=春, 1=夏, 2=秋, 3=冬）
+func get_season_by_day(day: int) -> int:
+	var day_in_year = ((day - 1) % 365) + 1  # 转换为一年内的天数
+
+	if day_in_year <= 91:  # 春季：1-91天
+		return Item.Season.Spring
+	elif day_in_year <= 182:  # 夏季：92-182天
+		return Item.Season.Summer
+	elif day_in_year <= 273:  # 秋季：183-273天
+		return Item.Season.Autumn
+	else:  # 冬季：274-365天
+		return Item.Season.Winter
+
+## 静态函数：根据天数获取季节（供其他脚本调用）
+# @param day: 当前天数（从1开始）
+# @return: 季节索引（0=春, 1=夏, 2=秋, 3=冬）
+static func get_season_by_day_static(day: int) -> int:
+	var day_in_year = ((day - 1) % 365) + 1
+
+	if day_in_year <= 91:
+		return 0  # Spring
+	elif day_in_year <= 182:
+		return 1  # Summer
+	elif day_in_year <= 273:
+		return 2  # Autumn
+	else:
+		return 3  # Winter
