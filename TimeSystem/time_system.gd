@@ -30,6 +30,10 @@ var game_speed:float = 1.0
 # 定义游戏中的星期循环，从星期一到星期天
 var weeks:Array = ["星期一","星期二","星期三","星期四","星期五","星期六","星期天"]
 
+## 季节数组
+# 定义游戏中的季节循环
+var seasons:Array = ["春","夏","秋","冬"]
+
 ## 初始天数
 # 游戏开始时的天数
 var initial_day:int = 1
@@ -57,6 +61,14 @@ var current_minute:int = -1
 ## 当前天数缓存
 # 用于检测天数变化，避免重复发出信号
 var current_day:int = 0
+
+## 当前季节
+# 基于365天计算季节（春季91天，夏季91天，秋季91天，冬季92天）
+var current_season:int = 0  # 0=春, 1=夏, 2=秋, 3=冬
+
+## 季节变化信号
+# 季节变化时触发，传递当前季节
+signal season_changed(season:int, season_name:String)
 
 ## 游戏时间信号
 # 每帧发出，传递当前累计时间
@@ -127,3 +139,40 @@ func recalculate_time() -> void:
 		current_day = day
 		# 发出天数变化信号，主要用于作物生长等需要按天计算的功能
 		time_tick_day.emit(day)
+
+	# 检查季节变化（基于365天的季节分布）
+	var new_season = get_season_by_day(day)
+	if current_season != new_season:
+		current_season = new_season
+		# 发出季节变化信号
+		season_changed.emit(current_season, seasons[current_season])
+
+## 根据天数获取季节（基于365天的正确季节分布）
+# @param day: 当前天数（从1开始）
+# @return: 季节索引（0=春, 1=夏, 2=秋, 3=冬）
+func get_season_by_day(day: int) -> int:
+	var day_in_year = ((day - 1) % 365) + 1  # 转换为一年内的天数
+
+	if day_in_year <= 91:  # 春季：1-91天
+		return Item.Season.Spring
+	elif day_in_year <= 182:  # 夏季：92-182天
+		return Item.Season.Summer
+	elif day_in_year <= 273:  # 秋季：183-273天
+		return Item.Season.Autumn
+	else:  # 冬季：274-365天
+		return Item.Season.Winter
+
+## 静态函数：根据天数获取季节（供其他脚本调用）
+# @param day: 当前天数（从1开始）
+# @return: 季节索引（0=春, 1=夏, 2=秋, 3=冬）
+static func get_season_by_day_static(day: int) -> int:
+	var day_in_year = ((day - 1) % 365) + 1
+
+	if day_in_year <= 91:
+		return 0  # Spring
+	elif day_in_year <= 182:
+		return 1  # Summer
+	elif day_in_year <= 273:
+		return 2  # Autumn
+	else:
+		return 3  # Winter

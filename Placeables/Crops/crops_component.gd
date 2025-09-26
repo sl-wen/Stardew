@@ -37,7 +37,7 @@ func initial():
 	player = get_tree().get_first_node_in_group("Player")
 
 func _process(_delta: float) -> void:
-	if player.current_item_type == Item.ItemType.Crops or player.current_item_type == Item.ItemType.Water:
+	if player.current_item_type == Item.ItemType.Seeds or player.current_item_type == Item.ItemType.Water:
 		get_cell_under_mouse()
 		block.show()
 		block.global_position = local_cell_position
@@ -52,18 +52,26 @@ func _process(_delta: float) -> void:
 		else:
 			in_soil = false
 		#上面这一段都是在判断是否是泥土
-		if distance <= 32 and can_crop and in_soil:
-			block.modulate = Color("0bff2569")
+
+		# 季节检测
+		var current_season = get_current_season()
+		var can_plant_in_season = can_plant_in_current_season(player.current_item, current_season)
+
+		if distance <= 32 and can_crop and in_soil and can_plant_in_season:
+			block.modulate = Color("0bff2569")  # 绿色 - 可以种植
 		else:
-			block.modulate = Color("ff192569")
+			block.modulate = Color("ff192569")  # 红色 - 不可以种植
 	else:
 		block.hide()
 	
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("mouse_left"):
-		if player.current_item_type == Item.ItemType.Crops and can_crop and in_soil:
-			get_cell_under_mouse()
-			add_crop()
+		if player.current_item_type == Item.ItemType.Seeds and can_crop and in_soil:
+			var current_season = get_current_season()
+			var can_plant_in_season = can_plant_in_current_season(player.current_item, current_season)
+			if can_plant_in_season:
+				get_cell_under_mouse()
+				add_crop()
 
 #能否种植的区域碰撞检测
 func on_area_entered(area:Area2D) -> void:
@@ -86,12 +94,17 @@ func get_cell_under_mouse() -> void:
 func add_crop() -> void:
 	if player.current_item == null: return
 	if distance <= 32:
-		if player.current_item_type == Item.ItemType.Crops:
-			var corn = load(player.current_item.placeable_scene_path)
-			var corn_ins = corn.instantiate() as Node2D
-			corn_ins.global_position = local_cell_position
-			get_parent().find_child("Crops").add_child(corn_ins)
-			player.bag_system.remove_num_item(player.item_index,1)
+		if player.current_item_type == Item.ItemType.Seeds:
+			var crop_scene = load(player.current_item.placeable_scene_path)
+			var crop_ins = crop_scene.instantiate() as Node2D
+			crop_ins.global_position = local_cell_position
+
+			# 将种子信息传递给作物实例
+			if crop_ins.has_method("set_seed_item"):
+				crop_ins.set_seed_item(player.current_item)
+
+			get_parent().find_child("Crops").add_child(crop_ins)
+			player.bag_system.remove_num_item(player.item_index, 1)
 				
 	
 func remove_crop() -> void:
@@ -105,3 +118,20 @@ func on_watering(local_cell_position) -> void:
 	get_cell_under_mouse()
 	if cell_source_id != -1 and in_soil:
 		water_soil.set_cells_terrain_connect([cell_position],terrain_set,terrain,true)
+
+		# 浇水已种植的作物
+		var crop_nodes = get_parent().find_child("Crops").get_children()
+		for crop_node in crop_nodes:
+			if crop_node.global_position == local_cell_position:
+				if crop_node.has_method("water_crop"):
+					crop_node.water_crop()
+				break
+
+func get_current_season() -> Item.Season:
+	# 获取当前季节，从TimeSystem获取正确计算
+	return TimeSystem.current_season
+
+func can_plant_in_current_season(seed_item: Item, current_season: Item.Season) -> bool:
+	if not seed_item or seed_item.seasons.size() == 0:
+		return true  # 如果没有季节限制，任何时候都可以种植
+	return current_season in seed_item.seasons

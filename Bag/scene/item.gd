@@ -3,7 +3,7 @@ class_name Item
 
 enum ItemType{
 	None,
-	Tool,##工具	
+	Tool,##工具
 	Hoe,##锄头
 	Axe,##斧头
 	Draft,##稿子
@@ -12,9 +12,12 @@ enum ItemType{
 	Consume,##消耗品
 	Placeables,##可放置的物品
 	Crops,##植物，作物等可以生长的物品
-	Materials,##可合成的材料类物品 
+	Materials,##可合成的材料类物品
 	Accessories,##饰品
 	Floors,##地板类
+	Seeds,##种子类
+	Animal,##动物类
+	AnimalProduct,##动物产品
 }
 enum UseType{
 	None,
@@ -27,6 +30,13 @@ enum DamageType{
 	Magic,##魔法
 	Summon,##召唤
 	Shoot,##远程
+}
+
+enum Season{
+	Spring,##春季
+	Summer,##夏季
+	Autumn,##秋季
+	Winter,##冬季
 }
 
 @export var name:String ## 物品的名字
@@ -54,6 +64,23 @@ enum DamageType{
 #放置类物品的属性
 @export_category("放置类物品属性")
 @export var placeable_scene_path:String
+
+#作物相关属性
+@export_category("作物属性")
+@export var seasons:Array[Season] ## 可种植季节
+@export var growth_days:int = 7 ## 生长天数
+@export var regrowth_days:int = 0 ## 再生长天数（0表示不可再生）
+@export var water_needed:bool = true ## 是否需要浇水
+@export var harvest_count:int = 1 ## 收获数量
+@export var seed_price:int = 0 ## 种子价格
+@export var sell_price:int = 0 ## 售卖价格
+
+#动物相关属性
+@export_category("动物属性")
+@export var animal_type:String ## 动物类型
+@export var happiness:int = 50 ## 幸福度 (0-100)
+@export var produces:Array[String] ## 生产的产品
+@export var production_days:int = 1 ## 生产周期天数
 
 func is_max_quantity() -> bool:
 	return quantity>=max_quantity
