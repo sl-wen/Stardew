@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://cw5mwkqapte2e" path="res://Bag/scene/item.gd" id="4_ui5ls"]
 [ext_resource type="PackedScene" uid="uid://0f820g6vrxhg" path="res://Bag/scene/box.tscn" id="4_x7ayi"]
 [ext_resource type="PackedScene" uid="uid://dr7ehqq10k2wk" path="res://Placeables/Crops/crops_component.tscn" id="5_ct8sv"]
+[ext_resource type="PackedScene" uid="uid://animal_component_scene" path="res://Placeables/animal_component.tscn" id="7_animal_component"]
 [ext_resource type="Script" uid="uid://4emof1mv6qby" path="res://Bag/scene/inventory_system.gd" id="6_f4gmo"]
 [ext_resource type="PackedScene" uid="uid://dfg8gg0uu4d2a" path="res://Map/change_scene_area.tscn" id="6_g0fpc"]
 [ext_resource type="Resource" uid="uid://bpjotrdl0f7gx" path="res://Bag/items/weapon/喵刀.tres" id="6_rb1dh"]
@@ -86,6 +87,9 @@ tile_set = ExtResource("1_332kk")
 [node name="Crops" type="Node2D" parent="."]
 y_sort_enabled = true
 
+[node name="Animals" type="Node2D" parent="."]
+y_sort_enabled = true
+
 [node name="SaveComponent" parent="Crops" instance=ExtResource("3_8y8a7")]
 
 [node name="TilemapComponent" parent="." node_paths=PackedStringArray("ground", "hoe_soil") instance=ExtResource("3_byhv2")]
@@ -96,6 +100,9 @@ hoe_soil = NodePath("../HoeSoil")
 tilled_soil = NodePath("../HoeSoil")
 ground = NodePath("../Ground")
 water_soil = NodePath("../WaterSoil")
+
+[node name="AnimalComponent" parent="." node_paths=PackedStringArray("ground") instance=ExtResource("7_animal_component")]
+ground = NodePath("../Ground")
 
 [node name="ChangeAreas" type="Node2D" parent="."]
 position = Vector2(2544, 288)

@@ -30,6 +30,10 @@ var game_speed:float = 1.0
 # 定义游戏中的星期循环，从星期一到星期天
 var weeks:Array = ["星期一","星期二","星期三","星期四","星期五","星期六","星期天"]
 
+## 季节数组
+# 定义游戏中的季节循环
+var seasons:Array = ["春","夏","秋","冬"]
+
 ## 初始天数
 # 游戏开始时的天数
 var initial_day:int = 1
@@ -57,6 +61,14 @@ var current_minute:int = -1
 ## 当前天数缓存
 # 用于检测天数变化，避免重复发出信号
 var current_day:int = 0
+
+## 当前季节
+# 基于天数计算季节（每28天一个季节）
+var current_season:int = 0  # 0=春, 1=夏, 2=秋, 3=冬
+
+## 季节变化信号
+# 季节变化时触发，传递当前季节
+signal season_changed(season:int, season_name:String)
 
 ## 游戏时间信号
 # 每帧发出，传递当前累计时间
@@ -127,3 +139,10 @@ func recalculate_time() -> void:
 		current_day = day
 		# 发出天数变化信号，主要用于作物生长等需要按天计算的功能
 		time_tick_day.emit(day)
+
+	# 检查季节变化（每28天一个季节）
+	var new_season = int(day / 28) % 4
+	if current_season != new_season:
+		current_season = new_season
+		# 发出季节变化信号
+		season_changed.emit(current_season, seasons[current_season])

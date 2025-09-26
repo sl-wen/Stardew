@@ -8,12 +8,19 @@ extends Node2D
 
 var player:Player = null
 var can_hurt:bool
+var plant_day:int = 0  # 种植天数
+var current_growth_stage:int = 0  # 当前生长阶段
+var is_watered:bool = false  # 是否浇水
+var is_dead:bool = false  # 是否枯死
+var harvest_count:int = 0  # 已收获次数
 
 func _ready() -> void:
 	area_2d.body_entered.connect(_on_body_entered)
 	hurt_component.body_droped.connect(on_body_droped)
 	player = get_tree().get_first_node_in_group("Player")
 	TimeSystem.time_tick_day.connect(on_time_tick_day)
+	TimeSystem.time_tick.connect(on_time_tick)
+	plant_day = TimeSystem.current_day
 	can_hurt = false
 	sprite_2d.frame = 0
 	
@@ -43,6 +50,48 @@ func add_fall_objects(num:int,item:Item) -> void: #bug原因：吸附的优先�
 			fall_ins.generate(item)
 
 func on_time_tick_day(day:int)->void:
-	var a_day = day+7 #从种下当天往后算7天
-	if day<=7:#应该从种下那天开始计算,浇水后第二天生长 3-10
-		sprite_2d.frame = (day-1)%sprite_2d.hframes
+	var days_grown = day - plant_day
+	update_growth_stage()
+
+func on_time_tick(day: int, hour: int, minute: int, week) -> void:
+	# 检查是否需要枯萎（超过一天没浇水）
+	if is_watered:
+		is_watered = false  # 每天都需要浇水
+	elif current_growth_stage > 0:
+		# 如果已经生长但没浇水，有概率枯萎
+		if randf() < 0.1:  # 10%概率枯萎
+			wither()
+
+func update_growth_stage() -> void:
+	var days_grown = TimeSystem.current_day - plant_day
+	var max_growth_days = 7  # 甜瓜生长7天
+
+	if days_grown >= max_growth_days:
+		current_growth_stage = 4  # 成熟
+		can_hurt = true
+	elif days_grown >= 5:
+		current_growth_stage = 3  # 开花
+	elif days_grown >= 3:
+		current_growth_stage = 2  # 生长
+	elif days_grown >= 1:
+		current_growth_stage = 1  # 发芽
+	else:
+		current_growth_stage = 0  # 种子
+
+	# 更新纹理（这里简化处理，实际应该使用不同的纹理）
+	if current_growth_stage >= 4:
+		sprite_2d.frame = 4  # 成熟状态
+	elif current_growth_stage >= 1:
+		sprite_2d.frame = current_growth_stage  # 其他生长阶段
+
+func wither() -> void:
+	# 枯萎逻辑
+	is_dead = true
+	sprite_2d.frame = 6  # 枯萎状态
+	can_hurt = true
+
+func water_crop() -> void:
+	# 浇水逻辑
+	if not is_dead:
+		is_watered = true
+		# 可以添加浇水特效
